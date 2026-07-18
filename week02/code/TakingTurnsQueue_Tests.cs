@@ -12,6 +12,10 @@ public class TakingTurnsQueueTests
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     // Defect(s) Found: 
+    // 1. People with Turns = 1 are being re-enqueued after their final turn,
+    //    causing them to become infinite turns (Turns = 0) and never be removed.
+    // 2. The queue never becomes empty because people with Turns = 0 are
+    //    incorrectly treated as infinite and re-enqueued.
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -44,6 +48,10 @@ public class TakingTurnsQueueTests
     // After running 5 times, add George with 3 turns.  Run until the queue is empty.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
     // Defect(s) Found: 
+    // 1. Same issue as Test 1 - people with 1 turn left are re-enqueued after their final turn.
+    // 2. The queue never empties because finite-turn people become infinite when they reach 0 turns.
+    // 3. Test will eventually fail with "Queue should have ran out of items by now" because
+    //    the queue never becomes empty.
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -86,6 +94,10 @@ public class TakingTurnsQueueTests
     // Run 10 times.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     // Defect(s) Found: 
+    // 1. Bob (2 turns) appears a third time when he should be removed after 2 turns.
+    // 2. The sequence after 10 runs is wrong because finite-turn people are not being removed.
+    // 3. The infinite person check will fail because Tim's Turns value is being modified
+    //    incorrectly when he's re-enqueued.
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var timTurns = 0;
@@ -117,6 +129,10 @@ public class TakingTurnsQueueTests
     // Run 10 times.
     // Expected Result: Tim, Sue, Tim, Sue, Tim, Sue, Tim, Tim, Tim, Tim
     // Defect(s) Found: 
+    // 1. Same issues as previous tests - finite-turn people are not being removed.
+    // 2. The sequence is wrong after Sue should have been removed.
+    // 3. The infinite check will pass for Tim (since Turns = -3 is never modified),
+    //    but the finite people are still broken.
     public void TestTakingTurnsQueue_ForeverNegative()
     {
         var timTurns = -3;
@@ -144,6 +160,7 @@ public class TakingTurnsQueueTests
     // Scenario: Try to get the next person from an empty queue
     // Expected Result: Exception should be thrown with appropriate error message.
     // Defect(s) Found: 
+    // None - This test passes because the empty check is implemented correctly.
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
