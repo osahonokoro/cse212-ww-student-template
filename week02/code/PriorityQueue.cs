@@ -1,6 +1,7 @@
 ﻿public class PriorityQueue
 {
     private List<PriorityItem> _queue = new();
+    public int Length => _queue.Count;  //Added this property
 
     /// <summary>
     /// Add a new value to the queue with an associated priority.  The
