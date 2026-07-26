@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 public class Translator
 {
     public static void Run()
@@ -21,10 +24,11 @@ public class Translator
     /// </summary>
     /// <param name="fromWord">The word to translate from</param>
     /// <param name="toWord">The word to translate to</param>
-    /// <returns>fixed array of divisors</returns>
     public void AddWord(string fromWord, string toWord)
     {
         // ADD YOUR CODE HERE
+        // Use the dictionary's indexer to add or update the translation
+        _words[fromWord] = toWord;
     }
 
     /// <summary>
@@ -35,6 +39,11 @@ public class Translator
     public string Translate(string fromWord)
     {
         // ADD YOUR CODE HERE
-        return "";
+        // Use TryGetValue to safely look up the translation
+        if (_words.TryGetValue(fromWord, out string translation))
+        {
+            return translation;
+        }
+        return "???";
     }
 }
